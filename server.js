@@ -29,20 +29,46 @@ var server = app.listen(port, function () {
 client.on('connect', function () {
   client.subscribe('adatok');
 })
+app.get("/adatok",function(req,res){
+	pg.connect(connectionString, function(err, client) {
+		if (err) throw err;
+			console.log('Connected to postgres!');
+		var query="select * from hello";
+		client.query(query, function(err, result) {
+			if(err) {
+				return console.error('error running query', err);
+			}
+			else{
+				var data=[];
+				for(var i=0; i<result.rows.length; ++i){
+					data[i]={"Temperature" : result.rows[i].Temp, "Humidity": result.rows[i].nedvesseg, "time_1": result.rows[i].time_1,"time_2": result.rows[i].time_2};
+					console.log(data[i]);
+				}
+				res.send(data);
+				client.end();
+			}
+		});
+	});
+});
 /*receave message from topics*/
 client.on('message', function (topic, message) {
 	var h=JSON.parse(message.toString());
-	console.log(h.homerseklet);
+	var date = new Date();
+	var hours = date.getHours();
+	var month = date.getUTCMonth() + 1; //months from 1-12
+	var day = date.getUTCDate();
+	var year = date.getUTCFullYear();
+	var minutes = date.getMinutes();
 	pg.connect(connectionString, function(err, client) {
 	if (err) throw err;
 		console.log('Connected to postgres!');
-		var query=sprintf('insert into hello("Temp",nedvesseg) values(%s,%s)',h.homerseklet,h.nedvesseg)
-			client.query(query, function(err, result) {
+		var query=sprintf('insert into hello("Temp",nedvesseg,time_1,time_2) values(%s,%s,\'%d-%d-%d\',\'%d:%d\')',h.homerseklet,h.nedvesseg,year,month,day,hours,minutes);
+		client.query(query, function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			}
 			client.end();
 		});
 	});
-})
+});
 
