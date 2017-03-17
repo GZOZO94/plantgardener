@@ -1,0 +1,14 @@
+{
+  "name": "app",
+  "version": "0.0.1",
+  "description": "first app",
+  "main": "server.js",
+  "author": {
+    "name": "Zozo",
+    "email": "gaszol11.c@gmail.com"
+  },
+  "engines": {
+    "node": "6.10.0",
+    "npm": "3.10.10"
+  }
+}

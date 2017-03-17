@@ -1,0 +1,11 @@
+homerseklet: 11
+homerseklet: 11
+nedvesseg: 11
+nedvesseg: 32
+
+nedvesseg: 11
+nedvesseg: 23
+nedvesseg: 23
+homerseklet: 11
+homerseklet: 11
+homerseklet: 22
