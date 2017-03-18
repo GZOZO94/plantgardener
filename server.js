@@ -52,7 +52,9 @@ app.get("/adatok",function(req,res){
 client.on('message', function (topic, message) {
 	var h=JSON.parse(message.toString());
 	var date = new Date();
-	var hours = date.getHours();
+	var hours = date.getHours()+1;
+	if(hours==24)
+		hours=0;
 	var month = date.getUTCMonth() + 1; //months from 1-12
 	var day = date.getUTCDate();
 	var year = date.getUTCFullYear();
