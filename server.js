@@ -13,9 +13,6 @@ var fs= require('fs');
 var sprintf = require('sprintf').sprintf;
 var connectionString = process.env.DATABASE_URL ||"postgres://kldpiqgdkrqypo:be78f021efa0263dd415150760e9d4ea324731c30fde1ff34204c9bb047878cd@ec2-23-21-213-202.compute-1.amazonaws.com:5432/ddvt14rq2g8n3p";
 pg.defaults.ssl = true;
-
-
-
 /*strart the main frontend*/
 app.get("/", function(request,response){
 	response.sendfile("index.html");
@@ -25,6 +22,7 @@ app.use(express.static("Pictures"));
 var server = app.listen(port, function () {
     console.log('node server is just fine! and running on port - ' + port);
 });
+var io=require('socket.io').listen(server);
 /*subscribe to topics*/
 client.on('connect', function () {
   client.subscribe('adatok');
@@ -59,6 +57,11 @@ client.on('message', function (topic, message) {
 	var day = date.getUTCDate();
 	var year = date.getUTCFullYear();
 	var minutes = date.getMinutes();
+	var data={"Temperature": h.homerseklet,
+	"Humidity": h.nedvesseg,
+	"time_1": year+"-"+month+"-"+day,
+	"time_2": hours+":"+minutes
+	};
 	pg.connect(connectionString, function(err, client) {
 	if (err) throw err;
 		console.log('Connected to postgres!');
@@ -70,5 +73,8 @@ client.on('message', function (topic, message) {
 			client.end();
 		});
 	});
+	io.emit("adat",data);
 });
-
+io.on('connection', function(socket){
+		console.log("connected");
+	});
