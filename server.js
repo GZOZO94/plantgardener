@@ -56,9 +56,9 @@ client.on('message', function (topic, message) {
 	var date = new time.Date();
 	date.setTimezone('Europe/Budapest');
 	var hours = date.getHours();
-	var month = date.getUTCMonth() + 1; //months from 1-12
-	var day = date.getUTCDate();
-	var year = date.getUTCFullYear();
+	var month = date.getMonth() + 1; //months from 1-12
+	var day = date.getDate();
+	var year = date.getFullYear();
 	var minutes = date.getMinutes();
 	var data={"Temperature": h.homerseklet,
 	"Humidity": h.nedvesseg,
