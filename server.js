@@ -7,6 +7,7 @@ var client  = mqtt.connect('mqtt://test.mosquitto.org')
 var port = process.env.PORT || 3000;
 /*postgresql client create*/
 var pg = require('pg');
+var time = require('time');
 /*get datas*/
 var data = {homerseklet:0,nedvesseg:0};
 var fs= require('fs');
@@ -52,8 +53,8 @@ app.get("/adatok",function(req,res){
 /*receave message from topics*/
 client.on('message', function (topic, message) {
 	var h=JSON.parse(message.toString());
-	process.env.TZ = 'Europe/Budapest';
-	var date = new Date();
+	var date = new time.Date();
+	date.setTimezone('Europe/Budapest');
 	var hours = date.getHours();
 	var month = date.getUTCMonth() + 1; //months from 1-12
 	var day = date.getUTCDate();
