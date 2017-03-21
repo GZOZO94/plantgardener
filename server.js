@@ -27,6 +27,7 @@ var io=require('socket.io').listen(server);
 client.on('connect', function () {
   client.subscribe('adatok');
 })
+
 app.get("/adatok",function(req,res){
 	pg.connect(connectionString, function(err, client) {
 		if (err) throw err;
@@ -51,10 +52,9 @@ app.get("/adatok",function(req,res){
 /*receave message from topics*/
 client.on('message', function (topic, message) {
 	var h=JSON.parse(message.toString());
+	process.env.TZ = 'Europe/Budapest';
 	var date = new Date();
-	var hours = date.getHours()+1;
-	if(hours==24)
-		hours=0;
+	var hours = date.getHours();
 	var month = date.getUTCMonth() + 1; //months from 1-12
 	var day = date.getUTCDate();
 	var year = date.getUTCFullYear();
@@ -64,6 +64,7 @@ client.on('message', function (topic, message) {
 	"time_1": year+"-"+month+"-"+day,
 	"time_2": hours+":"+minutes
 	};
+	console.log(date.getHours());
 	pg.connect(connectionString, function(err, client) {
 	if (err) throw err;
 		console.log('Connected to postgres!');
@@ -80,3 +81,4 @@ client.on('message', function (topic, message) {
 io.on('connection', function(socket){
 		console.log("connected");
 	});
+
