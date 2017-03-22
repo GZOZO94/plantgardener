@@ -65,9 +65,6 @@ client.on('message', function (topic, message) {
 	"time_1": year+"-"+month+"-"+day,
 	"time_2": hours+":"+minutes
 	};
-	console.log(h.homerseklet);
-	console.log(h);
-	console.log(date.getHours());
 	pg.connect(connectionString, function(err, client) {
 	if (err) throw err;
 		console.log('Connected to postgres!');
@@ -83,5 +80,9 @@ client.on('message', function (topic, message) {
 });
 io.on('connection', function(socket){
 		console.log("connected");
-	});
-
+	socket.on('control', function (data) {
+    console.log(data);
+	data=data.toString();
+	client.publish('control',data);
+  });
+});

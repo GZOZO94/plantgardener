@@ -8,6 +8,15 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 	<style>
 #hum {
 	width	: 100%;
@@ -17,16 +26,17 @@
 	width	: 100%;
 	height	: 500px;
 }
-										
+  #custom-handle {
+    width: 3em;
+    height: 1.6em;
+    top: 50%;
+    margin-top: -.8em;
+    text-align: center;
+    line-height: 1.6em;
+  }										
 </style>
 
 <!-- Resources -->
-<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-<script src="/socket.io/socket.io.js"></script>
 <script>
 var topic = "control";
 var temp=[];
@@ -210,6 +220,22 @@ function chart(){
 }
 $(document).ready(function(){
 var data=[];
+var control=0;
+var handle = $( "#custom-handle" );
+    $( "#slider" ).slider({
+		min: 0,
+		max: 180,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+		control=ui.value;
+      }
+    });
+$("#send").on('click',function(){
+	socket.emit('control',control);
+});
 $.get('/adatok',function(res){
 	for(var i=0; i<res.length; ++i){
 		data[i]=res[i];
@@ -337,6 +363,12 @@ $(".navbar-brand").click(function(e){
 			<div class="row">
 				<div class="jumbotron well">
 				<div id="hum"></div>	
+				</div>
+			</div>
+			<h1>Beavatkozó jel</h1>
+			<div class="row">
+				<div id="slider">
+					<div id="custom-handle" class="ui-slider-handle"></div>
 				</div>
 			</div>
 		</div>
