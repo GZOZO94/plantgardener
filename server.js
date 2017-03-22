@@ -65,6 +65,8 @@ client.on('message', function (topic, message) {
 	"time_1": year+"-"+month+"-"+day,
 	"time_2": hours+":"+minutes
 	};
+	console.log(h.homerseklet);
+	console.log(h);
 	console.log(date.getHours());
 	pg.connect(connectionString, function(err, client) {
 	if (err) throw err;
