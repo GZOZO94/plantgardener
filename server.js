@@ -11,6 +11,7 @@ var time = require('time');
 /*get datas*/
 var data = {homerseklet:0,nedvesseg:0};
 var fs= require('fs');
+var sscanf = require('scanf').sscanf;
 var sprintf = require('sprintf').sprintf;
 var connectionString = process.env.DATABASE_URL ||"postgres://kldpiqgdkrqypo:be78f021efa0263dd415150760e9d4ea324731c30fde1ff34204c9bb047878cd@ec2-23-21-213-202.compute-1.amazonaws.com:5432/ddvt14rq2g8n3p";
 pg.defaults.ssl = true;
@@ -52,7 +53,11 @@ app.get("/adatok",function(req,res){
 });
 /*receave message from topics*/
 client.on('message', function (topic, message) {
-	var h=JSON.parse(message.toString());
+	var h={homerseklet:0,nedvesseg:0};
+	var msg=message.toString();
+	console.log(msg);
+	var h=sscanf(msg,'%f,%f','homerseklet','nedvesseg');
+	console.log(h.homerseklet);
 	var date = new time.Date();
 	date.setTimezone('Europe/Budapest');
 	var hours = date.getHours();
