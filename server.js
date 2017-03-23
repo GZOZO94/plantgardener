@@ -3,7 +3,7 @@ var express=require('express'),
 	app=express();
 /*mqtt client create*/
 var mqtt = require('mqtt')
-var client  = mqtt.connect('mqtt://test.mosquitto.org')
+var client  = mqtt.connect({ host: '85.119.83.194', port: 1883 })
 var port = process.env.PORT || 3000;
 /*postgresql client create*/
 var pg = require('pg');
