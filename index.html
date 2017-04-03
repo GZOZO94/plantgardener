@@ -233,6 +233,20 @@ var handle = $( "#custom-handle" );
 		control=ui.value;
       }
     });
+$( "#slider2" ).slider({
+		min: 0,
+		max: 180,
+		create: function() {
+			handle.text( $( this ).slider( "value" ) );
+		}
+	});
+socket.on('control_in',function(msg){
+	console.log(msg);
+	var percent=(msg/180)*100;
+	var show=percent.toFixed(2).toString()+'%';
+	$('#percent').width(show);
+	$('#percent').html("Szelepállás: "+show);
+});
 $("#send").on('click',function(){
 	socket.emit('control',control);
 });
@@ -262,6 +276,9 @@ socket.on('adat',function(msg){
         });
 		chart();
 	});
+socket.on('control_in',function(msg){
+	console.log(msg);
+});
 $(".navbar-brand").click(function(e){
 			e.preventDefault();
 			var destId=e.currentTarget.id+"Section";
@@ -366,6 +383,11 @@ $(".navbar-brand").click(function(e){
 				</div>
 			</div>
 			<h1>Beavatkozó jel</h1>
+			<div class='progress'>
+				<div class='progress-bar progress-bar-striped active percent' id='percent' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width:0%'>
+				 Szelep állás
+				</div>
+			</div>
 			<div class="row">
 				<div id="slider">
 					<div id="custom-handle" class="ui-slider-handle"></div>

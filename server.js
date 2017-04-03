@@ -7,29 +7,33 @@ var client  = mqtt.connect({ host: '85.119.83.194', port: 1883 })
 var port = process.env.PORT || 3000;
 /*postgresql client create*/
 var pg = require('pg');
+/*date zone*/
 var time = require('time');
-/*get datas*/
-var data = {homerseklet:0,nedvesseg:0};
+/*scanf,printf*/
 var fs= require('fs');
 var sscanf = require('scanf').sscanf;
 var sprintf = require('sprintf').sprintf;
+/*connect to database*/
 var connectionString = process.env.DATABASE_URL ||"postgres://kldpiqgdkrqypo:be78f021efa0263dd415150760e9d4ea324731c30fde1ff34204c9bb047878cd@ec2-23-21-213-202.compute-1.amazonaws.com:5432/ddvt14rq2g8n3p";
 pg.defaults.ssl = true;
+var control=0;
 /*strart the main frontend*/
 app.get("/", function(request,response){
 	response.sendfile("index.html");
 });
+/*Give the static folder*/
 app.use(express.static("Pictures"));
 /*Node server is listen*/
 var server = app.listen(port, function () {
     console.log('node server is just fine! and running on port - ' + port);
 });
+/*waiting for IO requests*/
 var io=require('socket.io').listen(server);
 /*subscribe to topics*/
 client.on('connect', function () {
   client.subscribe('adatok');
 })
-
+/*send data from the server to the client*/
 app.get("/adatok",function(req,res){
 	pg.connect(connectionString, function(err, client) {
 		if (err) throw err;
@@ -81,13 +85,33 @@ client.on('message', function (topic, message) {
 			client.end();
 		});
 	});
+	control=intelligent(h.homerseklet,h.nedvesseg)
+	client.publish('control',control.toString());
+	io.emit('control_in',control);
+	/*Send data to the client*/
 	io.emit("adat",data);
 });
+/*Get data from the client*/
 io.on('connection', function(socket){
 		console.log("connected");
 	socket.on('control', function (data) {
     console.log(data);
+	io.emit('control_in',data);
 	data=data.toString();
 	client.publish('control',data);
   });
+	io.emit('control_in',control);
 });
+function intelligent(tmp,hum){
+	var control=0;
+	if(tmp>20 && tmp<30 && hum<3)
+		control=50;
+	else if(tmp>30 && tmp<50 && hum<5)
+		control=100;
+	else if(tmp>50 && hum<2)
+		control=180;
+	else 
+		control=0;
+	console.log(control);
+	return control;
+};
