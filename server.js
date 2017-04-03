@@ -97,6 +97,7 @@ io.on('connection', function(socket){
 	socket.on('control', function (data) {
     console.log(data);
 	io.emit('control_in',data);
+	control=data;
 	data=data.toString();
 	client.publish('control',data);
   });
