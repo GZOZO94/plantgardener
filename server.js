@@ -46,8 +46,7 @@ app.get("/adatok",function(req,res){
 			else{
 				var data=[];
 				for(var i=0; i<result.rows.length; ++i){
-					data[i]={"Temperature" : result.rows[i].Temp, "Humidity": result.rows[i].nedvesseg, "time_1": result.rows[i].time_1,"time_2": result.rows[i].time_2};
-					console.log(data[i]);
+					data[i]={"Temperature" : result.rows[i].Temp, "Humidity": result.rows[i].nedvesseg, "time_1": result.rows[i].time_1,"time_2": result.rows[i].time_2, 'Id': result.rows[i].Id};
 				}
 				res.send(data);
 				client.end();
@@ -59,9 +58,7 @@ app.get("/adatok",function(req,res){
 client.on('message', function (topic, message) {
 	var h={homerseklet:0,nedvesseg:0};
 	var msg=message.toString();
-	console.log(msg);
 	var h=sscanf(msg,'%f,%f','homerseklet','nedvesseg');
-	console.log(h.homerseklet);
 	var date = new time.Date();
 	date.setTimezone('Europe/Budapest');
 	var hours = date.getHours();
@@ -95,7 +92,6 @@ client.on('message', function (topic, message) {
 io.on('connection', function(socket){
 		console.log("connected");
 	socket.on('control', function (data) {
-    console.log(data);
 	io.emit('control_in',data);
 	control=data;
 	data=data.toString();
@@ -113,6 +109,5 @@ function intelligent(tmp,hum){
 		control=180;
 	else 
 		control=0;
-	console.log(control);
 	return control;
 };

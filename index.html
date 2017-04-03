@@ -42,6 +42,19 @@ var topic = "control";
 var temp=[];
 var hum=[];
 var socket = io();
+function settlefunc(data){
+	var	n=data.length;
+	var i,j,tmp;
+	for(i= n-1; i>0; i--)
+		for(j=0; j<i; j++)
+			if(data[j].Id > data[j+1].Id)
+			{
+				tmp = data[j];
+				data[j] = data[j+1];
+				data[j+1] = tmp;
+			}
+	return data;
+}
 function chart(){
 	var chart = AmCharts.makeChart("hum", {
 		"type": "serial",
@@ -241,7 +254,6 @@ $( "#slider2" ).slider({
 		}
 	});
 socket.on('control_in',function(msg){
-	console.log(msg);
 	var percent=(msg/180)*100;
 	var show=percent.toFixed(2).toString()+'%';
 	$('#percent').width(show);
@@ -251,8 +263,8 @@ $("#send").on('click',function(){
 	socket.emit('control',control);
 });
 $.get('/adatok',function(res){
-	for(var i=0; i<res.length; ++i){
-		data[i]=res[i];
+	data=settlefunc(res);
+	for(var i=0; i<data.length; ++i){
 		temp.push({
             "date": data[i].time_1+" "+data[i].time_2,
             "value": data[i].Temperature
@@ -265,7 +277,6 @@ $.get('/adatok',function(res){
 	chart();
 });
 socket.on('adat',function(msg){
-		console.log(msg);
 		temp.push({
             "date": msg.time_1+" "+msg.time_2,
             "value": msg.Temperature
@@ -276,9 +287,6 @@ socket.on('adat',function(msg){
         });
 		chart();
 	});
-socket.on('control_in',function(msg){
-	console.log(msg);
-});
 $(".navbar-brand").click(function(e){
 			e.preventDefault();
 			var destId=e.currentTarget.id+"Section";
