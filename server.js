@@ -58,6 +58,7 @@ app.get("/adatok",function(req,res){
 client.on('message', function (topic, message) {
 	var h={homerseklet:0,nedvesseg:0};
 	var msg=message.toString();
+	var datum="";
 	var h=sscanf(msg,'%f,%f','homerseklet','nedvesseg');
 	var date = new time.Date();
 	date.setTimezone('Europe/Budapest');
@@ -82,8 +83,8 @@ client.on('message', function (topic, message) {
 			client.end();
 		});
 	});
+	client.publish('hour',hours.toString());
 	control=intelligent(h.homerseklet,h.nedvesseg)
-	client.publish('control',control.toString());
 	io.emit('control_in',control);
 	/*Send data to the client*/
 	io.emit("adat",data);
