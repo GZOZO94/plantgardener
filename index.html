@@ -265,6 +265,7 @@ $("#send").on('click',function(){
 $.get('/adatok',function(res){
 	data=settlefunc(res);
 	for(var i=0; i<data.length; ++i){
+		console.log(data[i]);
 		temp.push({
             "date": data[i].time_1+" "+data[i].time_2,
             "value": data[i].Temperature

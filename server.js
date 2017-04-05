@@ -47,6 +47,7 @@ app.get("/adatok",function(req,res){
 				var data=[];
 				for(var i=0; i<result.rows.length; ++i){
 					data[i]={"Temperature" : result.rows[i].Temp, "Humidity": result.rows[i].nedvesseg, "time_1": result.rows[i].time_1,"time_2": result.rows[i].time_2, 'Id': result.rows[i].Id};
+					console.log(data);
 				}
 				res.send(data);
 				client.end();
@@ -83,8 +84,8 @@ client.on('message', function (topic, message) {
 			client.end();
 		});
 	});
-	client.publish('hour',hours.toString());
-	control=intelligent(h.homerseklet,h.nedvesseg)
+	/*client.publish('hour',hours.toString());*/
+	/*control=intelligent(h.homerseklet,h.nedvesseg)*/
 	io.emit('control_in',control);
 	/*Send data to the client*/
 	io.emit("adat",data);
