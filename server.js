@@ -84,32 +84,29 @@ client.on('message', function (topic, message) {
 			client.end();
 		});
 	});
-	/*client.publish('hour',hours.toString());*/
-	/*control=intelligent(h.homerseklet,h.nedvesseg)*/
-	io.emit('control_in',control);
+	client.publish('hour',hours.toString());
+	intelligent(h.homerseklet,h.nedvesseg);
 	/*Send data to the client*/
 	io.emit("adat",data);
 });
-/*Get data from the client*/
-io.on('connection', function(socket){
-		console.log("connected");
-	socket.on('control', function (data) {
-	io.emit('control_in',data);
-	control=data;
-	data=data.toString();
-	client.publish('control',data);
-  });
-	io.emit('control_in',control);
-});
+
 function intelligent(tmp,hum){
 	var control=0;
-	if(tmp>20 && tmp<30 && hum<3)
-		control=50;
-	else if(tmp>30 && tmp<50 && hum<5)
-		control=100;
-	else if(tmp>50 && hum<2)
+	if(hum>700) //If the temperature is above a certain level, lets water the plant for 5 sec
+	  {
 		control=180;
-	else 
-		control=0;
-	return control;
+		setTimeout(function () {
+			control=0;
+		  io.emit('control_in',control);
+		}, 5000);
+	  }
+	if(hum<700 && tmp>33.0) //If the temperature is above a certain level, lets water the plant for 5 sec
+	  {
+		control=40;
+		setTimeout(function () {
+			control=0;
+		  io.emit('control_in',control);
+		}, 5000);
+	  }
+	io.emit('control_in',control);
 };

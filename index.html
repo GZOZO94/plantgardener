@@ -235,32 +235,11 @@ $(document).ready(function(){
 var data=[];
 var control=0;
 var handle = $( "#custom-handle" );
-    $( "#slider" ).slider({
-		min: 0,
-		max: 180,
-      create: function() {
-        handle.text( $( this ).slider( "value" ) );
-      },
-      slide: function( event, ui ) {
-        handle.text( ui.value );
-		control=ui.value;
-      }
-    });
-$( "#slider2" ).slider({
-		min: 0,
-		max: 180,
-		create: function() {
-			handle.text( $( this ).slider( "value" ) );
-		}
-	});
 socket.on('control_in',function(msg){
 	var percent=(msg/180)*100;
 	var show=percent.toFixed(2).toString()+'%';
 	$('#percent').width(show);
 	$('#percent').html("Szelepállás: "+show);
-});
-$("#send").on('click',function(){
-	socket.emit('control',control);
 });
 $.get('/adatok',function(res){
 	data=settlefunc(res);
@@ -397,16 +376,10 @@ $(".navbar-brand").click(function(e){
 				 Szelep állás
 				</div>
 			</div>
-			<div class="row">
-				<div id="slider">
-					<div id="custom-handle" class="ui-slider-handle"></div>
-				</div>
-			</div>
 		</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		<button type="button" class="btn btn-default" id="send">Send</button>
       </div>
     </div>
 
