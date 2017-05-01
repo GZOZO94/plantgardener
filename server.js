@@ -14,7 +14,7 @@ var fs= require('fs');
 var sscanf = require('scanf').sscanf;
 var sprintf = require('sprintf').sprintf;
 /*connect to database*/
-var connectionString = process.env.DATABASE_URL ||"postgres://kldpiqgdkrqypo:be78f021efa0263dd415150760e9d4ea324731c30fde1ff34204c9bb047878cd@ec2-23-21-213-202.compute-1.amazonaws.com:5432/ddvt14rq2g8n3p";
+var connectionString = process.env.DATABASE_URL ||"postgres://mgcyndgxqawmjx:31189d5a00617e7bd0b5b8cf113e2bfc6e670b5fb487d649d8b69cbcbb4c12a0@ec2-54-247-82-87.eu-west-1.compute.amazonaws.com:5432/dcvi84d8gs2had";
 pg.defaults.ssl = true;
 var control=0;
 /*strart the main frontend*/
