@@ -7,7 +7,6 @@ var client  = mqtt.connect({ host: '85.119.83.194', port: 1883 })
 var port = process.env.PORT || 3000;
 /*postgresql client create*/
 var pg = require('pg');
-/*date zone*/
 var time = require('time');
 /*scanf,printf*/
 var fs= require('fs');
